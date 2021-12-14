@@ -12,7 +12,7 @@ public class MainActivity extends ReactActivity {
     super.onCreate(null);
 
     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-preferences.edit().putString("debug_http_host", "192.168.10.5:8081").apply();
+preferences.edit().putString("debug_http_host", "192.168.10.6:8081").apply();
   }
 
   /**

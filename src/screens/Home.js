@@ -1,52 +1,100 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Image,
-  ScrollView,
-} from 'react-native';
-import {custom, remix} from '../assets';
-import {Loader} from '../components';
-import {Bio} from '../components/Bio';
-import {Colors} from '../styles';
+import {StyleSheet, View} from 'react-native';
+import {Searchbar} from 'react-native-paper';
+import MasonryList from 'react-native-masonry-list';
+import {Loader, Wrapper} from '../components';
+import {Colors, height} from '../styles';
+import {AppContext} from '../contexts';
+import {useFetch} from '../hooks';
 
-export const Home = ({navigation}) => {
-  const goTo = (to = 'Remix') => navigation.navigate(to);
+export const Home = () => {
+  const [searchText, setSearchText] = React.useState('');
+  const [offset, setOffset] = React.useState(0);
+  const [isSearch, setSearch] = React.useState(false);
+  const [searchResult, setSearchResult] = React.useState([]);
+
+  const {
+    trending = [],
+    setTrendOffset,
+    trendOffset,
+    refetch,
+    isRefetching,
+  } = React.useContext(AppContext);
+
+  const onChangeText = txt => {
+    setSearch(false);
+    setSearchResult([]);
+    setOffset(0);
+    setSearchText(txt);
+  };
+
+  const onSearch = () => {
+    if (searchText && searchText !== '') {
+      setSearch(true);
+    }
+  };
+
+  const query = useFetch(
+    'search',
+    offset,
+    searchResult,
+    setSearchResult,
+    isSearch,
+    searchText,
+  );
+
+  const onEndReached = () => {
+    if (isSearch) {
+      setOffset(offset + 50);
+      query?.refetch();
+    } else {
+      setTrendOffset(trendOffset + 50);
+      refetch();
+    }
+  };
+
+  const isLoading = isSearch ? query?.isRefetching : isRefetching;
+  const images = isSearch ? searchResult : trending;
+
   return (
-    <Loader title="Home">
-      <ScrollView
-        contentContainerStyle={styles?.scroll}
-        showsVerticalScrollIndicator={false}>
-        <Bio />
-      </ScrollView>
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => goTo('Remix')}>
-          <Image source={remix} style={styles.img} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => goTo('Custom')}>
-          <Image source={custom} style={styles.img} />
-        </TouchableOpacity>
+    <Wrapper>
+      <View style={styles.searchBox}>
+        <Searchbar
+          value={searchText}
+          onChangeText={onChangeText}
+          onEndEditing={onSearch}
+        />
       </View>
-    </Loader>
+      <MasonryList
+        key={isSearch}
+        images={images}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={1}
+        masonryFlatListColProps={{
+          getItemLayout: (data, index) => ({
+            length: height,
+            offset: height * index,
+            index,
+          }),
+          showVerticalIndicator: false,
+        }}
+      />
+      {isLoading && <Loader style={styles.loader} />}
+    </Wrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1},
-  footer: {
-    height: 114,
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: Colors.WHITE,
+  searchBox: {
+    height: 100,
+    backgroundColor: Colors.header,
+    justifyContent: 'flex-end',
+    paddingBottom: 10,
+    paddingHorizontal: 20,
   },
-  img: {height: 25, width: 18.3},
-  scroll: {
-    margin: 70,
-    marginTop: 40,
+  loader: {
+    bottom: 40,
+    position: 'absolute',
+    alignSelf: 'center',
   },
 });

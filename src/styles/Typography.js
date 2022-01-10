@@ -3,6 +3,13 @@ import Colors from './Colors';
 
 const fontFamily = Platform.OS === 'ios' ? 'Varela round' : 'Varela';
 export default StyleSheet.create({
+  bold70: {
+    fontWeight: 'bold',
+    fontSize: 70,
+    flexWrap: 'wrap',
+    fontFamily,
+    color: Colors.BLACK,
+  },
   bold30: {
     fontWeight: 'bold',
     fontSize: 30,

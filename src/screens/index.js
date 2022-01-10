@@ -1,4 +1,4 @@
-import {Home} from './Home';
+import {Match} from './Match';
 import Splash from './Splash';
 
-export {Splash, Home};
+export {Splash, Match};

@@ -27,5 +27,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  container2: {flex: 1, backgroundColor: Colors.background},
+  container2: {flex: 1, backgroundColor: Colors.WHITE, padding: 10},
 });

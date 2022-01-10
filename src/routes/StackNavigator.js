@@ -3,7 +3,7 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
-import {Home, Splash} from '../screens';
+import {Match, Splash} from '../screens';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +15,7 @@ const StackNavigator = () => {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Match" component={Match} />
     </Stack.Navigator>
   );
 };
